@@ -1,0 +1,51 @@
+send
+//request : "watch"を送信
+
+get message
+JanusPluginMessage {
+  _plainMessage:
+   { janus: 'event',
+     session_id: 4687808674468708,
+     transaction: 'hogehoge',
+     sender: 713736330702184,
+     plugindata: { plugin: 'janus.plugin.streaming', data: [Object] },
+     jsep:
+      { type: 'offer',
+        sdp:
+         'v=0\r\no=- 1588711932315143 1 IN IP4 192.168.0.11\r\ns=Mountpoint 1\r\nt=0 0\r\na=group:BUNDLE audio video\r\na=msid-semantic: WMS janus\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\nc=IN IP4 192.168.0.11\r\na=sendonly\r\na=mid:audio\r\na=rtcp-mux\r\na=ice-ufrag:1ojz\r\na=ice-pwd:X64+5jDF3X2kjI4XyBvhfS\r\na=ice-options:trickle\r\na=fingerprint:sha-256 6A:05:A1:8A:B9:3D:5B:8B:60:5A:FD:5F:88:1D:BD:C1:38:55:53:B3:60:69:10:48:70:18:0B:24:6F:07:47:0C\r\na=setup:actpass\r\na=rtpmap:111 opus/48000/2\r\na=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=msid:janus janusa0\r\na=ssrc:3918561815 cname:janus\r\na=ssrc:3918561815 msid:janus janusa0\r\na=ssrc:3918561815 mslabel:janus\r\na=ssrc:3918561815 label:janusa0\r\na=candidate:1 1 udp 2013266431 192.168.0.11 53941 typ host\r\na=end-of-candidates\r\nm=video 9 UDP/TLS/RTP/SAVPF 100 101\r\nc=IN IP4 192.168.0.11\r\na=sendonly\r\na=mid:video\r\na=rtcp-mux\r\na=ice-ufrag:1ojz\r\na=ice-pwd:X64+5jDF3X2kjI4XyBvhfS\r\na=ice-options:trickle\r\na=fingerprint:sha-256 6A:05:A1:8A:B9:3D:5B:8B:60:5A:FD:5F:88:1D:BD:C1:38:55:53:B3:60:69:10:48:70:18:0B:24:6F:07:47:0C\r\na=setup:actpass\r\na=rtpmap:100 VP8/90000\r\na=rtcp-fb:100 nack\r\na=rtcp-fb:100 nack pli\r\na=rtcp-fb:100 goog-remb\r\na=extmap:1 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=rtpmap:101 rtx/90000\r\na=fmtp:101 apt=100\r\na=ssrc-group:FID 202002388 3595822896\r\na=msid:janus janusv0\r\na=ssrc:202002388 cname:janus\r\na=ssrc:202002388 msid:janus janusv0\r\na=ssrc:202002388 mslabel:janus\r\na=ssrc:202002388 label:janusv0\r\na=ssrc:3595822896 cname:janus\r\na=ssrc:3595822896 msid:janus janusv0\r\na=ssrc:3595822896 mslabel:janus\r\na=ssrc:3595822896 label:janusv0\r\na=candidate:1 1 udp 2013266431 192.168.0.11 53941 typ host\r\na=end-of-candidates\r\n' } },
+  _plugin:
+   StreamingPlugin {
+     _events: { maxListeners: 20 },
+     newListener: false,
+     verboseMemoryLeak: false,
+     _conf:
+      { wildcard: true,
+        delimiter: ':',
+        newListener: false,
+        maxListeners: 20 },
+     delimiter: ':',
+     wildcard: true,
+     listenerTree: { detach: [Object], message: [Object] },
+     _session:
+      Session {
+        _events: [Object],
+        newListener: false,
+        verboseMemoryLeak: false,
+        _conf: [Object],
+        delimiter: ':',
+        wildcard: true,
+        listenerTree: [Object],
+        _connection: [Connection],
+        _id: 4687808674468708,
+        _plugins: [Object],
+        _keepAlivePeriod: 30000,
+        _keepAliveTimer: [Timer],
+        _transactions: [Transactions] },
+     _name: 'janus.plugin.streaming',
+     _id: 713736330702184,
+     _pcListeners: {},
+     _pc: null,
+     _currentEntityId: null,
+     _transactions: Transactions { list: {} },
+     event: 'message' } }
+{ streaming: 'event', result: { status: 'preparing' } }

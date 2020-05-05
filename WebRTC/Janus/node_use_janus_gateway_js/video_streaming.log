@@ -1,0 +1,8 @@
+response
+undefined
+get message
+{ plugin: 'janus.plugin.streaming',
+  data:
+   { streaming: 'list', list: [ [Object], [Object], [Object] ] } }
+get message
+undefined
