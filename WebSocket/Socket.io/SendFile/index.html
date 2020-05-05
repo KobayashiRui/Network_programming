@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        form input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+        }
+
+        form button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <button id="print-start">Print Start</button>
+    <button id="print-stop">Print Stop</button>
+    <input type="file" id="input">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.js"
+        integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
+    <script>
+
+        $(function () {
+            var socket = io();
+            $('form').submit((e) => {
+                console.log(socket)
+                e.preventDefault(); // prevents page reloading
+                socket.emit('chat message', $('#m').val());
+                $('#m').val('');
+                return false;
+            });
+            socket.on('chat message', (msg) => {
+                console.log("get meesage" + msg)
+                $('#messages').append($('<li>').text(msg));
+            });
+            socket.on('get data', (data) => {
+                console.log("get data")
+                console.log(data)
+            })
+        });
+
+        document.getElementById("print-start").onclick = function() {
+            console.log("click : print-start")
+            fetch("http://localhost:3000/start-print",{method:'POST'})
+            .then((res)=>{
+                console.log(res)
+            })
+        };
+
+        document.getElementById("print-stop").onclick = function() {
+            console.log("click : print-stop")
+            fetch("http://localhost:3000/stop-print",{method:'POST'})
+            .then((res)=>{
+                console.log(res)
+            })
+        };
+
+        const inputElement = document.getElementById("input");
+        inputElement.addEventListener("change", handleFiles, false);
+        async function handleFiles() {
+            const fileList = this.files; /* ファイルリストを処理するコードがここに入る */
+            console.log("File list num : " + fileList.length);
+            if (fileList.length > 0) {
+                const file = fileList[0];
+                console.log(getByteLength(file.name))
+                let file_length = getByteLength(file.name)
+                //var formData = new FormData();
+                //formData.append('file_data',file);
+                //2byteに分ける
+                let file_length_high = file_length >> 8 
+                let file_length_low　= file_length & 0xFF;
+
+                let file_name_len = new Uint8Array([file_length_high, file_length_low]);
+                let file_data = await file.arrayBuffer() 
+                let send_data = new Blob([file_name_len, file.name, file_data])
+
+                let myHeaders = new Headers();
+
+                fetch("http://localhost:3000/file-upload", {
+                    headers: {
+                        'Content-type': 'application/octet-stream'
+                    },
+                    method: 'POST', body: send_data
+                }).then(res => { console.log(res) })
+            }
+        }
+        function getByteLength(str) {
+            str = (str == null) ? "" : str;
+            return encodeURI(str).replace(/%../g, "*").length;
+        }
+    </script>
+
+</body>
+
+</html>
