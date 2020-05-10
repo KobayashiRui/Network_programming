@@ -4,6 +4,7 @@
   "description": "",
   "main": "janus_test.js",
   "dependencies": {
+    "express": "^4.17.1",
     "janus-gateway-js": "^2.0.1",
     "minnie-janus": "^0.9.4",
     "websocket": "^1.0.31"
