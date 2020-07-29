@@ -18,8 +18,8 @@ passport.use("google-opid",new OpenidConnectStrategy({
     authorizationURL: "https://accounts.google.com/o/oauth2/auth",
     tokenURL: "https://accounts.google.com/o/oauth2/token",
     userInfoURL: "https://www.googleapis.com/oauth2/v1/userinfo",
-    clientID: "ClientID",
-    clientSecret: "ClientSecret",
+    clientID: "",
+    clientSecret: "",
     callbackURL: "http://localhost:8081/opid-callback",
     scope: ["openid", "email", "profile" ]
 }, function(accessToken, refreshToken, profile, done) {
