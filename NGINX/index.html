@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<input type="button" value="TEST" onClick="testAPI()">
+<script>
+    function testAPI(){
+        console.log("test API")
+        fetch('/testAPI')
+        .then(function(response) {
+            return response.text()
+        })
+        .then(function(text){
+            console.log("get text")
+            console.log(text)
+        })
+    }
+</script>
+</html>
