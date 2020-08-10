@@ -1,0 +1,52 @@
+<html>
+<h2>Login</h2>
+<form onsubmit="Login(); return false">
+    <input id="login-name" required type="name" >
+    <input id="login-password" required type="password">
+    <input type="submit" value="Login">
+</form>
+<h2>Signup</h2>
+<form onsubmit="Signup(); return false">
+    <input id="signup-name" required type="name" >
+    <input id="signup-password" required type="password">
+    <input type="submit" value="Signup">
+</form>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+function Login(){
+    let name_data = document.getElementById("login-name").value
+    let pass_data = document.getElementById("login-password").value
+    console.log("login")
+    console.log("name_data : " + name_data)
+    console.log("pass_data : " + pass_data)
+
+    axios.post('/login', {
+       username : name_data,
+       password : pass_data,
+    }).then((response) => {
+        console.log("response!!")
+        console.log(response)
+    })
+}
+
+function Signup(){
+    let name_data = document.getElementById("signup-name").value
+    let pass_data = document.getElementById("signup-password").value
+    console.log("Signup")
+    console.log("name_data : " + name_data)
+    console.log("pass_data : " + pass_data)
+    axios.post('/signup', {
+       username : name_data,
+       password : pass_data,
+    }).then((response) => {
+        console.log("response!!")
+        console.log(response)
+    })
+
+}
+
+</script>
+</html>
