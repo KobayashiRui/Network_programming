@@ -35,18 +35,6 @@ class User extends Model {
 
 const app = express();
 
-let Users = [
-  {
-    id:1,
-    name:'hoge',
-    password:'test123'
-  },
-  {
-    id:2,
-    name:'hogeho',
-    password:'test456'
-  }
-]
 
 //json形式に対応する
 app.use(express.json())
@@ -69,13 +57,14 @@ app.use(passport.initialize());
 // Passportとセッション管理を連携
 app.use(passport.session());
 
-// セッションにユーザーIDを格納
+// セッションにユーザーデータを格納
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user);
 });
 // 認証後セッションのユーザーIDからユーザー情報を取得する
-passport.deserializeUser(async function(id, done) {
-  let user = await User.query().findById(id)
+passport.deserializeUser(async function(user, done) {
+  //let user = await User.query().findById(id) //objecitonのクエリ
+  console.log("this is session")
   console.log(user)
   done(null, user)
   //User.findById(id, function(err, user) {
@@ -91,27 +80,19 @@ passport.use('local-login',new LocalStrategy(
   },
   async function(username, password, done) {
     // usernameで検索
-    console.log(username + "," + password)
-    const query_result = await User.query().where("name",username).where("password",password)
-    console.log(query_result[0])
-    if(!query_result){
-      return done(null, false)
-    }
-    return done(null, query_result[0])
+    const _query_result = await User.query().where("name",username)//.where("password",password)
+    const query_result = _query_result[0]
 
-    //User.findOne({ username: username }, function(err, user) {
-    //  if (err) { return done(err); }
-    //  // ユーザー登録なし
-    //  if (!user) {
-    //    return done(null, false, { message: 'usernameが登録されていません。' });
-    //  }
-    //  // パスワードを検証
-    //  if (user.password !== password) {
-    //    return done(null, false, { message: 'passwordが間違っています。' });
-    //  }
-    //  // 認証OKならユーザー情報を返す
-    //  return done(null, user);
-    //});
+    //ユーザー登録していない
+    if(!query_result){
+      return done(null, false,{message:"ユーザー未登録"})
+    }
+    else if(query_result.password != password){
+      return done(null, false,{message:"パスワードが違います"})
+    }
+
+    return done(null, query_result)
+
   }
 ));
 
@@ -120,29 +101,21 @@ passport.use('local-signup', new LocalStrategy( {
     usernameField: "username",
     passwordField: "password"
     },
-    function(username, password, done) {
+    async function(username, password, done) {
       console.log("sign up!")
-    //// usernameで検索
-    User.findOne({ username: username }, function(err, user) {
-      if (err) { return done(err); }
-      // ユーザー登録済み
-      if (!!user) {
-        return done(null, false, { message: '既に登録されているusernameです。' });
+      const _query_result = await User.query().where("name",username)//.where("password",password)  
+      const query_result = _query_result[0]
+      //ユーザー登録済み
+      if(!!query_result){
+        return done(null, false, {message:'すでに登録されています'})
       }
-      // ユーザー登録
-      User.create({
-        username,
-        password
+      //ユーザー登録
+      const _create_user_result = await User.query().insert({
+        name:username,
+        password:password
       })
-      .then(function(user) {
-        // 完了したらユーザー情報を返す
-        return done(null, user);
-      })
-      .catch(function(err) {
-        console.log(err);
-        return done(null, false, { message: '登録エラー' });
-      });
-    });
+
+      return done(null, _create_user_result)
   }
 ));
 
@@ -153,8 +126,9 @@ app.post('/signup',passport.authenticate('local-signup'), (req, res, next) => {
 );
 
 // ログイン処理
-
 app.post('/login', passport.authenticate('local-login'), (req,res, next)=> {
+  console.log("login user")
+  console.log(req.user)
   res.send("login ok")
 });
 
@@ -169,6 +143,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/check_login', (req, res) => {
+  console.log(req.user)
   res.send(req.user)
 })
 

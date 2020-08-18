@@ -19,17 +19,17 @@ Model.knex(knex)
 
 class User extends Model {
     static get tableName(){
-        return 'user'
+        return 'test_table'
     }
 }
 
 
 async function main (){
-    //await User.query().insert({ name: 'Hogeho',age:20})
-    //result = await User.query()
-    //console.log(result)
-    result = await User.query().where('name','Hogeho')
+    await User.query().insert({ name: 'Hogeho',age:20})
+    result = await User.query()
     console.log(result)
+    //result = await User.query().where('name','Hogeho')
+    //console.log(result)
 }
 
 //app.get('/', (req, res) => res.send('Hello World!'))
