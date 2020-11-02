@@ -22,7 +22,6 @@ const knex = Knex({
 const redisClient = redis.createClient({
   host: '127.0.0.1',
   port: 6379,
-
 })
 
 Model.knex(knex)
@@ -72,7 +71,9 @@ passport.deserializeUser(async function(user, done) {
   //});
 });
 
+
 // ログイン用のストラテジー
+// 新しいfield作れるの？？
 passport.use('local-login',new LocalStrategy(
   { // fieldとの対応
     usernameField:"username",
@@ -144,6 +145,10 @@ app.get('/', (req, res) => {
 
 app.get('/check_login', (req, res) => {
   console.log(req.user)
+  if(req.user.level != 0){
+    req.logout()
+    res.redirect("/")
+  }
   res.send(req.user)
 })
 
