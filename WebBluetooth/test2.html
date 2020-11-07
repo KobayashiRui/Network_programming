@@ -1,0 +1,22 @@
+<html>
+    <h1>BluteTooth Test</h1>
+    <input type="button" value="SCAN" onclick="ScanBluetooth();">
+    <script>
+        console.log("this is bluetooth test")
+        async function ScanBluetooth(){
+            let device = await navigator.bluetooth.requestDevice({
+                filters:[{services: ["50fdb226-8fca-4b82-9b2c-7f352e1cd280"]}]
+            })
+            let server = await device.gatt.connect()
+            let service = await  server.getPrimaryService("50fdb226-8fca-4b82-9b2c-7f352e1cd280")
+            let characteristic = await service.getCharacteristic("59ccc81c-1b24-4f1b-990d-6621f53ee0f9")
+            let value = await characteristic.readValue()
+            let data = value.getUint16(0);
+            console.log("get data : " , data)
+            console.log(value)
+            let set_data = new Uint8Array([1]);
+            let result = await characteristic.writeValue(set_data);
+            console.log("write")
+        }
+    </script>
+</html>

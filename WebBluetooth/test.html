@@ -1,0 +1,28 @@
+<html>
+    <h1>BluteTooth Test</h1>
+    <input type="button" value="SCAN" onclick="ScanBluetooth();">
+    <script>
+        console.log("this is bluetooth test")
+        function ScanBluetooth(){
+            navigator.bluetooth.requestDevice({
+                filters:[{services: ["50fdb226-8fca-4b82-9b2c-7f352e1cd280"]}]
+            }).then(device => {
+                console.log(device)
+                return device.gatt.connect()
+            }).then(server => {
+                console.log("get Services")
+                return server.getPrimaryService("50fdb226-8fca-4b82-9b2c-7f352e1cd280")
+            }).then(service => {
+                console.log("Service")
+                console.log(service)
+                return service.getCharacteristic("59ccc81c-1b24-4f1b-990d-6621f53ee0f9")
+            }).then(characteristic => {
+                return characteristic.readValue()
+            }).then(value => {
+                let data = value.getUint16(0);
+                console.log("get data : " , data)
+                console.log(value)
+            })
+        }
+    </script>
+</html>
