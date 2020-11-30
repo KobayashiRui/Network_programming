@@ -3,20 +3,53 @@
     <input type="button" value="SCAN" onclick="ScanBluetooth();">
     <script>
         console.log("this is bluetooth test")
+        let service_uuid = 0xec00
+        //let service_uuid ="50fdb226-8fca-4b82-9b2c-7f352e1cd280" 
+        let characteristic_uuid = 0xec0f
+        //let characteristic_uuid = "59ccc81c-1b24-4f1b-990d-6621f53ee0f9"
+        let cam_value = JSON.stringify({
+              "wifi_ssid": "testHogehoge",
+              "wifi_password": "hogehogepossword",
+              "cam_name": "カメラです",
+              "cam_token": "cameratokenhogehogehgoe",
+              "room_pin":"",
+              "factory_name": "factoryname",
+              "room_number": "roomnumber123",
+              "gateway_url": "https://magnarecta.tk/hogehoge"
+            })
+        console.log(cam_value)
+        let result = str2ab(cam_value)
         async function ScanBluetooth(){
             let device = await navigator.bluetooth.requestDevice({
-                filters:[{services: ["50fdb226-8fca-4b82-9b2c-7f352e1cd280"]}]
+                filters:[{services: [service_uuid]}]
             })
             let server = await device.gatt.connect()
-            let service = await  server.getPrimaryService("50fdb226-8fca-4b82-9b2c-7f352e1cd280")
-            let characteristic = await service.getCharacteristic("59ccc81c-1b24-4f1b-990d-6621f53ee0f9")
+            let service = await  server.getPrimaryService(service_uuid)
+            let characteristic = await service.getCharacteristic(characteristic_uuid)
             let value = await characteristic.readValue()
-            let data = value.getUint16(0);
-            console.log("get data : " , data)
+            //let data = value.getUint16(0);
+            //console.log("get data : " , data)
+            console.log("get value")
             console.log(value)
-            let set_data = new Uint8Array([1]);
-            let result = await characteristic.writeValue(set_data);
+            console.log(str2ab(cam_value))
+            //let set_data = new Uint8Array([1]);
+            let result =  await characteristic.writeValue(str2ab(cam_value));
             console.log("write")
+            server.disconnect()
+        }
+
+        function ab2str(buf) {
+            return String.fromCharCode.apply(null, new Uint16Array(buf));
+        }
+        function str2ab(str) {
+          var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+          var bufView = new Uint16Array(buf);
+          for (var i=0, strLen=str.length; i < strLen; i++) {
+            bufView[i] = str.charCodeAt(i);
+          }
+          console.log(bufView)
+          console.log(buf)
+          return buf;
         }
     </script>
 </html>
