@@ -7,46 +7,41 @@
         //let service_uuid ="50fdb226-8fca-4b82-9b2c-7f352e1cd280" 
         let characteristic_uuid = 0xec0f
         //let characteristic_uuid = "59ccc81c-1b24-4f1b-990d-6621f53ee0f9"
-        //let cam_value = JSON.stringify({
-        //      "wifi_ssid": "testHogehoge",
-        //      "wifi_password": "hogehogepossword",
-        //      "cam_name": "カメラです",
-        //      "cam_token": "cameratokenhogehogehgoe",
-        //      "room_pin":"",
-        //      "factory_name": "factoryname",
-        //      "room_number": "roomnumber123",
-        //      "gateway_url": "https://magnarecta.tk/hogehoge"
-        //    })
-        let cam_value = "abcdef"
+        let cam_value = JSON.stringify({
+              "wifi_ssid": "testHogehoge",
+              "wifi_password": "hogehogepossword",
+              "cam_name": "カメラです",
+              "cam_token": "cameratokenhogehogehgoe",
+              "room_pin":"",
+              "factory_name": "factoryname",
+              "room_number": "roomnumber123",
+              "gateway_url": "https://magnarecta.tk/hogehoge"
+            })
         console.log(cam_value)
-        let result = str2ab(cam_value)
         async function ScanBluetooth(){
             let device = await navigator.bluetooth.requestDevice({
-                filters:[{services: [service_uuid]}],
-                optionalServices: [service_uuid]
+                filters:[{services: [service_uuid]}]
             })
-            console.log(device)
-
-            let server = await device.gatt.connect();  
-            //if(server.connectted){
-            //    console.log("connected!!")
-            //}else(
-            //    console.log("not connected...")
-            //)
-            console.log("get primary service")
+            let server = await device.gatt.connect()
             let service = await  server.getPrimaryService(service_uuid)
             let characteristic = await service.getCharacteristic(characteristic_uuid)
             //let value = await characteristic.readValue()
             //let data = value.getUint16(0);
             //console.log("get data : " , data)
             //let set_data = new Uint8Array([1]);
-            let result =  await characteristic.writeValueWithoutResponse(str2ab(cam_value));
+
+            let send_data = str2ab(cam_value)
+            let send_segments = segmentation(send_data, 20);
+            console.log(send_segments)
+            for(let i = 0; i < send_segments.length; i++){
+                let result =  await characteristic.writeValueWithoutResponse(send_segments[i]);
+            }
             console.log("write")
             let value = await characteristic.readValue()
             console.log("get value")
             console.log(ab2str(value))
             //let data = value.getUint16(0);
-            //server.disconnect()
+            server.disconnect()
         }
 
         function ab2str(buf) {
@@ -61,6 +56,17 @@
           console.log(bufView)
           console.log(buf)
           return buf;
+        }
+        function segmentation(arrayBuffer, segmentSize)
+        {
+            let segments = [];
+            let fi = 0;
+            while(fi*segmentSize < arrayBuffer.byteLength){
+                segments.push(arrayBuffer.slice(fi*segmentSize, (fi+1)*segmentSize));
+                ++fi;
+            }
+            return segments
+
         }
     </script>
 </html>
